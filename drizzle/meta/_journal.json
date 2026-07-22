@@ -1,0 +1,41 @@
+{
+  "version": "7",
+  "dialect": "sqlite",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "6",
+      "when": 1784332800000,
+      "tag": "0000_pixelkin_backend_saves",
+      "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "6",
+      "when": 1784419200000,
+      "tag": "0001_cp_dance_storage_hardening",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "6",
+      "when": 1784505600000,
+      "tag": "0002_agent_memory_context",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "6",
+      "when": 1784592000000,
+      "tag": "0003_story_context_compaction",
+      "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "6",
+      "when": 1784678400000,
+      "tag": "0004_background_asset_catalog",
+      "breakpoints": true
+    }
+  ]
+}

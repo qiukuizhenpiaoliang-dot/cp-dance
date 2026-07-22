@@ -1,0 +1,121 @@
+:root {
+  color-scheme: light;
+  font-family: ui-monospace, "SFMono-Regular", "PingFang SC", monospace;
+}
+
+* { box-sizing: border-box; }
+
+html,
+body,
+#desktop-surface {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  overflow: hidden;
+  background: transparent;
+  user-select: none;
+}
+
+body { pointer-events: none; }
+
+.desktop-agent { pointer-events: auto; }
+
+.desktop-agent {
+  position: fixed;
+  left: var(--desktop-x);
+  top: var(--desktop-y);
+  width: 150px;
+  min-height: 154px;
+  transform: translate(-50%, -82%) scale(var(--desktop-scale, 1));
+  transform-origin: 50% 100%;
+  touch-action: none;
+  cursor: grab;
+  transition: left 360ms cubic-bezier(.18,.8,.24,1), top 360ms cubic-bezier(.18,.8,.24,1);
+}
+
+.desktop-agent.dragging {
+  cursor: grabbing;
+  filter: drop-shadow(0 10px 5px rgba(20, 18, 15, .2));
+  transition: none;
+}
+
+.desktop-agent.clicked .desktop-sprite,
+.desktop-agent.clicked .desktop-pending { animation: desktop-click-bounce 360ms steps(3, end); }
+
+@keyframes desktop-click-bounce { 50% { transform: translateY(-9px) scale(1.04); } }
+
+.desktop-sprite,
+.desktop-pending {
+  position: absolute;
+  left: 11px;
+  bottom: 24px;
+  width: 128px;
+  height: 128px;
+  image-rendering: pixelated;
+}
+
+.desktop-sprite {
+  background-repeat: no-repeat;
+  filter: hue-rotate(var(--desktop-hue, 0deg));
+}
+
+.desktop-pending {
+  display: grid;
+  place-items: center;
+  border: 2px dashed rgba(25, 23, 19, .55);
+  border-radius: 14px;
+  background: rgba(255, 250, 239, .78);
+  font-size: 30px;
+}
+
+.desktop-shadow {
+  position: absolute;
+  left: 36px;
+  bottom: 20px;
+  width: 78px;
+  height: 13px;
+  border-radius: 50%;
+  background: rgba(28, 25, 20, .18);
+  filter: blur(1px);
+}
+
+.desktop-name {
+  position: absolute;
+  left: 50%;
+  bottom: 0;
+  transform: translateX(-50%);
+  max-width: 145px;
+  padding: 3px 7px;
+  border: 1px solid rgba(25, 23, 19, .72);
+  border-radius: 5px;
+  background: rgba(255, 250, 239, .9);
+  color: #191713;
+  font-size: 10px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.desktop-bubble {
+  position: absolute;
+  left: 50%;
+  bottom: 150px;
+  width: max-content;
+  max-width: 230px;
+  transform: translateX(-50%);
+  padding: 7px 9px;
+  border: 2px solid #191713;
+  border-radius: 8px 8px 8px 2px;
+  background: rgba(255, 252, 244, .95);
+  box-shadow: 3px 3px 0 rgba(25, 23, 19, .15);
+  color: #191713;
+  font: 12px/1.45 system-ui, "PingFang SC", sans-serif;
+  pointer-events: none;
+}
+
+.desktop-bubble b {
+  display: block;
+  margin-bottom: 2px;
+  font-size: 10px;
+  color: #766650;
+}

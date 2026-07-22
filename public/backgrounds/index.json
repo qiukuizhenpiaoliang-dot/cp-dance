@@ -1,0 +1,10 @@
+{
+  "schema": "cp-dance/background-catalog/v1",
+  "revision": 1,
+  "updatedAt": "2026-07-22T00:00:00.000Z",
+  "naming": {
+    "bundled": "Use semantic filenames for assets you are permitted to redistribute.",
+    "generated": "bg_{world-slug}_{location-slug}_{time-or-day}_{weather-or-clear}_{utc-timestamp}_{short-id}.png"
+  },
+  "assets": []
+}
