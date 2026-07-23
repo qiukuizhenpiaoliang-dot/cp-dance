@@ -1,10 +1,12 @@
 # CP Dance / CP 跳动
 
+[English](README.md) | [简体中文](README.zh-CN.md)
+
 CP Dance is a consent-aware pixel-character social simulation. Each character
 has an independent Character Agent, directional relationship state, private
 memory, and the right to reply, hesitate, refuse, stay silent, or leave.
 
-> 中文部署与 API 配置说明：[运行指南](docs/RUNNING_GUIDE.zh-CN.md)
+> Detailed setup and API configuration: [中文运行指南](docs/RUNNING_GUIDE.zh-CN.md)
 
 The project supports two separately entered experiences:
 
