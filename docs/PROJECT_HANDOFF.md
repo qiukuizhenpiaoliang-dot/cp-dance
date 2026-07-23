@@ -7,6 +7,8 @@
 > 公开快照不绑定生产站点；部署前请配置自己的 Sites 项目、D1 和 R2。
 >
 > 领域规则：[AGENT_ARCHITECTURE.md](./AGENT_ARCHITECTURE.md)
+>
+> 本地启动、API 配置、模型用途和排错：[RUNNING_GUIDE.zh-CN.md](./RUNNING_GUIDE.zh-CN.md)
 
 ## 0. 接手者先读这里
 
@@ -490,8 +492,8 @@ NEWAPI_BASE_URL        # 仅为旧部署保留的共享回退
 ```text
 图像编辑端点: https://image-provider.example.com/v1/images/edits
 图像模型: gpt-image-2
-文本 Base URL: https://text-provider.example.com
-文本模型: your-text-model
+文本 Base URL: https://text-provider.example.com/v1
+文本模型: deepseek-v4-flash（推荐 DeepSeek V4 系列，实际 ID 以服务商为准）
 ```
 
 `worker/agent-config.ts` 是唯一配置入口：图像接口只读取 `NEWAPI_IMAGE_*`，Character Agent 与 Director Agent 都只读取 `NEWAPI_TEXT_*`。Director Agent 不读取任何背景生图配置。角色/动作通道固定调用 `/v1/images/edits`；Background Asset Agent 在 `resolve` 无匹配或所有者手动生成时调用 `/v1/images/generations`。文本通道优先尝试 OpenAI 兼容 `/v1/chat/completions`，遇到兼容性状态码后尝试 Anthropic `/v1/messages`。

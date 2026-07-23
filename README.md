@@ -4,6 +4,8 @@ CP Dance is a consent-aware pixel-character social simulation. Each character
 has an independent Character Agent, directional relationship state, private
 memory, and the right to reply, hesitate, refuse, stay silent, or leave.
 
+> 中文部署与 API 配置说明：[运行指南](docs/RUNNING_GUIDE.zh-CN.md)
+
 The project supports two separately entered experiences:
 
 - **Natural mode** wakes characters without prewriting a plot.
@@ -80,6 +82,7 @@ authority or persistence behavior.
 ```bash
 npm install
 cp .env.example .env.local
+# Edit .env.local, then:
 npm run dev
 ```
 
@@ -87,19 +90,34 @@ The repository starts with an empty background catalog and no character
 presets. Upload a reference image you are authorized to use when creating a
 character. Image generation fails closed when no image provider is configured.
 
-Environment variables are server-side only:
+Environment variables are server-side only. Recommended models:
+
+- Text: **DeepSeek V4**. The default example uses `deepseek-v4-flash`; use the
+  exact DeepSeek V4 model ID exposed by your provider.
+- Image: **GPT Image 2**, configured as `gpt-image-2`.
 
 ```bash
 NEWAPI_BASE_URL=
 NEWAPI_IMAGE_BASE_URL=https://image-provider.example.com/v1/images/edits
 NEWAPI_IMAGE_API_KEY=
 NEWAPI_IMAGE_MODEL=gpt-image-2
-NEWAPI_TEXT_BASE_URL=https://text-provider.example.com
+NEWAPI_TEXT_BASE_URL=https://text-provider.example.com/v1
 NEWAPI_TEXT_API_KEY=
-NEWAPI_TEXT_MODEL=your-text-model
+NEWAPI_TEXT_MODEL=deepseek-v4-flash
 ```
 
-Never commit `.env.local` or real credentials.
+| Channel | Used by |
+| --- | --- |
+| `NEWAPI_TEXT_*` | Character decisions and dialogue, Director outlines and public story compaction, optional character-research correction/extraction/distillation |
+| `NEWAPI_IMAGE_*` | Base character sprite sheets, incremental action sheets, and background generation when no licensed catalog asset matches |
+
+The text endpoint must be an OpenAI-compatible API root such as
+`https://provider.example.com/v1`, not the full `/chat/completions` URL. The
+image endpoint may be the API root or its `/v1/images/edits` URL.
+
+See the [Chinese running guide](docs/RUNNING_GUIDE.zh-CN.md) for a complete
+function map, deployment settings, status checks, and troubleshooting. Never
+commit `.env.local` or real credentials.
 
 ## Persistence
 
