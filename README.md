@@ -1,7 +1,7 @@
 # CP Dance / CP 跳动
 
 <img width="1280" height="720" alt="image" src="https://github.com/user-attachments/assets/134b0b30-5124-4239-b83d-31fc179227fa" />
-
+飞书文档链接：https://zida4bhxt77.feishu.cn/wiki/NOSrwjmgwiyepJk15qOciNGWnjg?from=from_copylink
 
 CP 跳动是一个重视角色自主权与同意边界的像素角色社交模拟。每个角色都有独立的 Character Agent、方向性关系状态和私有记忆，也始终保留回应、犹豫、拒绝、沉默或离开的权利。
 
