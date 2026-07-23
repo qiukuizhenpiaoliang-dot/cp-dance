@@ -1,4 +1,5 @@
 # CP Dance / CP 跳动
+<img width="1280" height="720" alt="image" src="https://github.com/user-attachments/assets/6a2d3721-cf51-4ad6-a2dd-a577c1947c35" />
 
 CP Dance is a consent-aware pixel-character social simulation. Each character
 has an independent Character Agent, directional relationship state, private
