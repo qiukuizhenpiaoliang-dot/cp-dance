@@ -1662,6 +1662,7 @@ test("supports independent natural and director modes with shared Character Agen
   assert.match(page, /状态观测台/);
   assert.match(page, /stageAgentStyle/);
   assert.match(page, /spatialIntentLabel/);
+  assert.match(page, /spatialIntentLabel\(spatial\?\.intent \|\| "idle", state\.agents\.length === 1\)/);
   assert.match(page, /自然模式/);
   assert.match(page, /directionSummary/);
   assert.match(page, /runNaturalAgentTurn/);
@@ -1839,6 +1840,9 @@ test("supports independent natural and director modes with shared Character Agen
   assert.match(engine, /SET_RELATIONSHIP_DRAFT/);
   assert.match(engine, /state\.agents\.length < 1/);
   assert.match(engine, /advanceSoloNatural/);
+  assert.match(engine, /const soloSpatialIntents: SpatialIntent\[\] = \["idle", "wander", "rest"\]/);
+  assert.match(engine, /agents\.length === 1 \? normalizeSoloSpatialIntent\(incomingIntent\) : incomingIntent/);
+  assert.match(engine, /agents\.length === 1 \? "alone" : proximity/);
   assert.match(engine, /ENTER_TOWN/);
   assert.match(engine, /ADD_SAVED_AGENT/);
   assert.match(engine, /addSavedAgent/);

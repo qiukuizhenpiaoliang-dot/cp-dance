@@ -1,6 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { HANDOFF_SCHEMA, STATE_SCHEMA, isAllowedOrigin, validateDesktopAction, validateHandoffPayload, validatePublishedState } from "./bridge-core.mjs";
+import { HANDOFF_SCHEMA, STATE_SCHEMA, corsHeaders, isAllowedOrigin, validateDesktopAction, validateHandoffPayload, validatePublishedState } from "./bridge-core.mjs";
 
 const state = {
   phase: "town",
@@ -10,9 +10,14 @@ const state = {
 };
 
 test("desktop bridge accepts configured sites and local development origins", () => {
+  const productionOrigin = "https://cp-dance-demo-qxy.otter233.chatgpt.site";
+  assert.equal(isAllowedOrigin(productionOrigin), true);
+  assert.equal(corsHeaders(productionOrigin)["access-control-allow-origin"], productionOrigin);
+  assert.equal(corsHeaders(productionOrigin)["access-control-allow-private-network"], "true");
   assert.equal(isAllowedOrigin("https://cp-dance.example", ["https://cp-dance.example"]), true);
   assert.equal(isAllowedOrigin("http://localhost:3000"), true);
   assert.equal(isAllowedOrigin("https://example.com"), false);
+  assert.equal(isAllowedOrigin("https://another-demo.otter233.chatgpt.site"), false);
 });
 
 test("desktop handoff validates natural world and matching origin", () => {

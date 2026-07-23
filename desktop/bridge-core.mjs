@@ -2,7 +2,9 @@ export const HANDOFF_SCHEMA = "cp-dance/desktop-handoff/v1";
 export const STATE_SCHEMA = "cp-dance/desktop-bridge-state/v1";
 export const ACTIONS_SCHEMA = "cp-dance/desktop-actions/v1";
 export const BRIDGE_HEADER = "cp-dance-desktop-v1";
-export const DEFAULT_ALLOWED_ORIGINS = [];
+export const DEFAULT_ALLOWED_ORIGINS = [
+  "https://cp-dance-demo-qxy.otter233.chatgpt.site",
+];
 
 export function isAllowedOrigin(origin, configured = []) {
   if (typeof origin !== "string") return false;

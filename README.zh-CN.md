@@ -106,6 +106,23 @@ NEWAPI_TEXT_MODEL=deepseek-v4-flash
 
 仓库中的 `.openai/hosting.json` 是占位配置。请替换为自己的项目 ID，或修改 `vite.config.ts` 适配其他托管平台。不要复用其他所有者的项目 ID、数据库、存储桶或公开来源。
 
+## 桌宠伴侣
+
+桌宠展示需要同一台电脑上的 Electron 本机伴侣；纯网页不能自行创建透明置顶的系统桌面窗口。请保持网页标签页打开，在本机安装仓库依赖并启动伴侣：
+
+```bash
+npm install
+npm run desktop:dev
+```
+
+官方公开体验站已默认加入精确来源白名单。其他部署需要在启动伴侣时只放行自己的完整来源：
+
+```bash
+CP_DANCE_ALLOWED_ORIGINS=https://your-site.example.com npm run desktop:dev
+```
+
+然后在浏览器中进入自然模式世界，点击“切到桌宠展示”。当前 MVP 支持 macOS 和 Windows，尚未提供签名的 `.dmg` 或 `.exe` 安装包。
+
 ## 验证
 
 ```bash

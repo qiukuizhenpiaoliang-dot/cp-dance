@@ -131,6 +131,29 @@ The included `.openai/hosting.json` is a placeholder. Replace its project ID or
 adapt `vite.config.ts` for your hosting platform. Do not reuse another owner's
 project ID, database, bucket, or public origin.
 
+## Desktop companion
+
+Desktop-pet display is provided by a small local Electron companion; a hosted
+web page cannot create a transparent system desktop window by itself. Keep the
+web page open, install the repository dependencies on the same computer, and
+start the companion:
+
+```bash
+npm install
+npm run desktop:dev
+```
+
+The official public demo origin is allowed by default. For another deployment,
+allow only that deployment's exact origin when starting the companion:
+
+```bash
+CP_DANCE_ALLOWED_ORIGINS=https://your-site.example.com npm run desktop:dev
+```
+
+Then enter a Natural-mode world in the browser and choose
+`Switch to desktop display`. The companion supports macOS and Windows in the
+current MVP; it is not yet a signed `.dmg` or `.exe`.
+
 ## Validation
 
 ```bash

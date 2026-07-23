@@ -329,8 +329,19 @@ const spatialSeeds = [
   { x: 51, y: 77, facing: "left" as const },
 ];
 const spatialIntents: SpatialIntent[] = ["idle", "wander", "approach", "align", "paired", "cuddle", "comfort", "play", "retreat", "keep_distance", "observe", "rest"];
+const soloSpatialIntents: SpatialIntent[] = ["idle", "wander", "rest"];
 
-export function spatialIntentLabel(intent: SpatialIntent) {
+function normalizeSoloSpatialIntent(intent: SpatialIntent): SpatialIntent {
+  return soloSpatialIntents.includes(intent) ? intent : "idle";
+}
+
+export function spatialIntentLabel(intent: SpatialIntent, solo = false) {
+  if (solo) {
+    const normalized = normalizeSoloSpatialIntent(intent);
+    if (normalized === "wander") return "四处走动";
+    if (normalized === "rest") return "独自休息";
+    return "安静待着";
+  }
   return {
     idle: "安静待着", wander: "四处走动", approach: "正在靠近", align: "正在细对齐", paired: "共同动作中", cuddle: "正在贴贴", comfort: "陪在身边",
     play: "一起玩", retreat: "正在离开", keep_distance: "保持距离", observe: "留意对方", rest: "独自休息",
@@ -346,7 +357,8 @@ function normalizeSpatial(
     const fallback = spatialSeeds[index % spatialSeeds.length];
     const value = current?.[agent.id];
     const desktop = value?.coordinateSpace === "desktop";
-    const intent = spatialIntents.includes(value?.intent as SpatialIntent) ? value?.intent as SpatialIntent : "idle";
+    const incomingIntent = spatialIntents.includes(value?.intent as SpatialIntent) ? value?.intent as SpatialIntent : "idle";
+    const intent = agents.length === 1 ? normalizeSoloSpatialIntent(incomingIntent) : incomingIntent;
     const proximity = ["alone", "far", "normal", "near", "touching"].includes(value?.proximity || "") ? value?.proximity as SpatialProximity : agents.length === 1 ? "alone" : "far";
     return [agent.id, {
       agentId: agent.id,
@@ -354,13 +366,13 @@ function normalizeSpatial(
       y: clamp(Number.isFinite(value?.y) ? value!.y! : fallback.y, desktop ? 8 : 57, desktop ? 92 : 79),
       coordinateSpace: desktop ? "desktop" as const : "stage" as const,
       facing: value?.facing === "left" || value?.facing === "right" ? value.facing : fallback.facing,
-      targetId: agents.some((item) => item.id === value?.targetId) ? value!.targetId! : null,
+      targetId: agents.length > 1 && agents.some((item) => item.id === value?.targetId && item.id !== agent.id) ? value!.targetId! : null,
       intent,
-      proximity,
-      perception: typeof value?.perception === "string" ? value.perception.slice(0, 120) : agents.length === 1 ? "这里暂时只有我一个人。" : "我能看见其他角色正在房间里活动。",
+      proximity: agents.length === 1 ? "alone" : proximity,
+      perception: agents.length === 1 ? "这里暂时只有我一个人。" : typeof value?.perception === "string" ? value.perception.slice(0, 120) : "我能看见其他角色正在房间里活动。",
       updatedTurn: Number.isFinite(value?.updatedTurn) ? value!.updatedTurn! : 0,
       renderScale: Number.isFinite(value?.renderScale) ? Math.max(0.82, Math.min(1.18, value!.renderScale!)) : 1,
-      interactionId: typeof value?.interactionId === "string" ? value.interactionId : null,
+      interactionId: agents.length === 1 ? null : typeof value?.interactionId === "string" ? value.interactionId : null,
     } satisfies CharacterSpatialState];
   }));
   const collisionFree = options.skipOccupancy ? normalized : separateSpatialOccupancy(agents, normalized).spatial;
@@ -1774,7 +1786,7 @@ function advanceSoloNatural(state: GameState): GameState {
   event.memoryAudit = memory.audits;
   const current = normalizeSpatial(state.agents, state.spatial);
   const seed = hash(`${activity.title}-${state.turn}`);
-  const intent: SpatialIntent = /巡视|小事/.test(activity.title) ? "wander" : /休息/.test(activity.title) ? "rest" : "observe";
+  const intent: SpatialIntent = /巡视|小事/.test(activity.title) ? "wander" : /休息/.test(activity.title) ? "rest" : "idle";
   const spatial = { ...current, [actor.id]: { ...current[actor.id], x: clamp(18 + seed % 64, 14, 86), y: clamp(63 + seed % 14, 61, 78), facing: seed % 2 ? "left" as const : "right" as const, targetId: null, intent, proximity: "alone" as const, perception: "这里暂时只有我一个人，我按自己的节奏活动。", updatedTurn: state.turn + 1 } };
   return { ...state, day: state.day + 1, turn: state.turn + 1, agents: memory.agents, spatial, events: [event, ...state.events].slice(0, 100), compressionCount: state.compressionCount + memory.compressed, lastNotice: "角色感知到当前是单人空间，并完成了一次个人行为。" };
 }
@@ -1945,6 +1957,7 @@ function applyTransientDesktopAgentDecision(state: GameState, decision: Characte
   let facing = own.facing;
   if (target && ["observe", "face_other", "speak", "remain_silent", "stay"].includes(decision.action)) facing = facingToward(own, target);
   if (decision.action === "look_away") facing = own.facing === "left" ? "right" : "left";
+  const transientIntent: SpatialIntent = decision.action === "look_away" ? "keep_distance" : decision.action === "rest" ? "rest" : "observe";
   return {
     ...state,
     agents: state.agents.map((agent) => agent.id === actor.id ? {
@@ -1957,8 +1970,8 @@ function applyTransientDesktopAgentDecision(state: GameState, decision: Characte
       [actor.id]: {
         ...own,
         facing,
-        targetId: target ? decision.targetId : own.targetId,
-        intent: decision.action === "look_away" ? "keep_distance" : decision.action === "rest" ? "rest" : "observe",
+        targetId: target ? decision.targetId : null,
+        intent: state.agents.length === 1 ? normalizeSoloSpatialIntent(transientIntent) : transientIntent,
         perception: decision.observableBehavior,
         updatedTurn: state.turn,
         interactionId: null,
@@ -2044,7 +2057,7 @@ function applyIndependentAgentDecision(state: GameState, decision: CharacterAgen
     y: nextY,
     facing: nextFacing,
     targetId: targetSpatial ? decision.targetId : null,
-    intent: spatialIntentForDecision(decision.action),
+    intent: state.agents.length === 1 ? normalizeSoloSpatialIntent(spatialIntentForDecision(decision.action)) : spatialIntentForDecision(decision.action),
     proximity: state.agents.length === 1 ? "alone" : targetSpatial ? proximityFor({ ...actorSpatial, x: nextX, y: nextY }, targetSpatial) : "far",
     perception: state.agents.length === 1 ? "这里暂时只有我一个人，我按自己的节奏活动。" : decision.observableBehavior,
     updatedTurn: state.turn + 1,
