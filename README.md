@@ -1,6 +1,5 @@
 # CP Dance / CP 跳动
 
-[English](README.md) | [简体中文](README.zh-CN.md)
 <img width="1280" height="720" alt="image" src="https://github.com/user-attachments/assets/134b0b30-5124-4239-b83d-31fc179227fa" />
 
 
